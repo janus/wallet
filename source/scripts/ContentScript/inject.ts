@@ -25,6 +25,7 @@ class ProviderManager {
       const id = Date.now() + '.' + Math.random()
   
       window.addEventListener(id, ({ detail }) => {
+        console.log(id, detail);
         const response = JSON.parse(detail)
         if (response.error) reject(new Error(response.error))
         else resolve(response.result)
