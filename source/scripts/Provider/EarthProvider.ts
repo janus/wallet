@@ -14,7 +14,7 @@ export class EarthProvider {
 
   getAddress() {
     const { activeAccount }: IWalletState = store.getState().wallet;
-
+    console.log('getAddress', activeAccount);
     return activeAccount?.address;
   }
 

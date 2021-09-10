@@ -48,6 +48,8 @@ export const messagesHandler = (
         //
       }
     } else if (message.type === 'ENABLE_REQUEST') {
+      console.log('ENABLE_REQUEST', message, origin && allowed, origin, allowed);
+
       if (origin && allowed) {
         return Promise.resolve({ id: message.id, result: origin && allowed });
       }
@@ -82,7 +84,8 @@ export const messagesHandler = (
       if (method === 'wallet.isConnected') {
         result = { connected: !!allowed };
       } else if (method === 'wallet.getAddress') {
-        result = mainController.provider.getAddress();
+        console.log('wallet.getAddress', 'CAL_REQUEST');
+        result = mainController.provider.getAddress() || 'xxx';
       } else if (method === 'wallet.getNetwork') {
         result = mainController.provider.getNetwork();
       } else if (method === 'wallet.getBalance') {

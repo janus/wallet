@@ -25,7 +25,7 @@ class ProviderManager {
       const id = Date.now() + '.' + Math.random()
   
       window.addEventListener(id, ({ detail }) => {
-        console.log(id, detail);
+        console.log(id, detail, 'proxy');
         const response = JSON.parse(detail)
         if (response.error) reject(new Error(response.error))
         else resolve(response.result)
@@ -33,7 +33,11 @@ class ProviderManager {
         once: true,
         passive: true
       })
-  
+      console.log({
+        id,
+        type,
+        data
+      }, 'postMessage');
       window.postMessage({
         id,
         type,
@@ -51,6 +55,7 @@ class ProviderManager {
   }
 
   enable () {
+    console.log('enable', 'ENABLE_REQUEST');
     return this.proxy('ENABLE_REQUEST')
   }
 }
@@ -189,13 +194,14 @@ async function handleRequest (req) {
 
 window.earth = {
   evtRegMap: {},
+  version: "1.0.0",
   isConnected: async () => {
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.isConnected')()
   },
   enable: async () => {
     const accepted = await window.providerManager.enable()
-    if (!accepted) throw new Error('User rejected')
+    if (!accepted) throw new Error('User rejected v1')
     const icp = window.providerManager.getProviderFor('ICP')
     return icp.getMethod('wallet.getAddress')()
   },

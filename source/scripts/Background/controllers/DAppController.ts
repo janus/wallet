@@ -2,12 +2,15 @@ import { ConnectedDApps, DAppInfo } from '~global/types';
 import { listNewDapp } from '~state/dapp';
 import store from '~state/store';
 import { IDAppController, SignatureRequest } from '../types/IDAppController';
+import { updateActiveAccount } from '~state/wallet';
+import { EarthKeyringPair } from '@earthwallet/keyring';
 
 class DAppController implements IDAppController {
   #current: DAppInfo = { origin: '', logo: '', title: '' };
   #request: SignatureRequest;
 
   fromPageConnectDApp(origin: string, title: string) {
+    console.log('fromPageConnectDApp', origin, title);
     const dapp: ConnectedDApps = store.getState().dapp;
 
     this.#current = {
@@ -15,15 +18,23 @@ class DAppController implements IDAppController {
       logo: `chrome://favicon/size/64@1x/${origin}`,
       title,
     };
+    console.log(dapp, !!dapp[origin]);
 
     return !!dapp[origin];
   }
 
   fromUserConnectDApp(origin: string, dapp: DAppInfo) {
+    console.log('fromUserConnectDApp', origin, dapp);
     store.dispatch(listNewDapp({ id: origin, dapp }));
   }
 
+  setActiveAccount(account: EarthKeyringPair & { id: string }) {
+    console.log('setActiveAccount');
+    store.dispatch(updateActiveAccount(account));
+  }
+
   getCurrent() {
+    console.log('getCurrent');
     return this.#current;
   }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ActionButton from '~components/composed/ActionButton';
 import NavButton from '~components/composed/NavButton';
-import { useConnectWalletToDApp, useCurrentDapp } from '~hooks/useController';
+import { useConnectWalletToDApp, useCurrentDapp, useUpdateActiveAccount } from '~hooks/useController';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import styles from './index.module.scss';
@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { selectAccounts } from '~state/wallet';
 import { isUndefined } from 'lodash';
 import { getSymbol } from '~utils/common';
+import { EarthKeyringPair } from '@earthwallet/keyring';
 
 enum ConnectStep {
   Accounts,
@@ -18,6 +19,8 @@ enum ConnectStep {
 export default function ConnectDappPage() {
   const dapp = useCurrentDapp();
   const connectWalletToDapp = useConnectWalletToDApp();
+  const setActiveAccount = (account: EarthKeyringPair & { id: string }) => useUpdateActiveAccount(account);
+
   const accounts = useSelector(selectAccounts);
 
   const [step, setStep] = useState(ConnectStep.Accounts);
@@ -28,8 +31,13 @@ export default function ConnectDappPage() {
       setStep(ConnectStep.Confirm);
       return;
     }
-    connectWalletToDapp();
-    window.close();
+    connectWalletToDapp().then(() => {
+      console.log('connectWalletToDapp Done!!');
+      accountIndex && setActiveAccount(accounts[accountIndex]);
+    });
+
+
+    //window.close();
   };
 
   return (
