@@ -33,7 +33,8 @@ export default function ConnectDappPage() {
     }
     connectWalletToDapp().then(() => {
       console.log('connectWalletToDapp Done!!');
-      accountIndex && setActiveAccount(accounts[accountIndex]);
+      if (accountIndex === undefined || (accountIndex < 0)) return;
+      setActiveAccount(accounts[accountIndex]);
     });
 
 

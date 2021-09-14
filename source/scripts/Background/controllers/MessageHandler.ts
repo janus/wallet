@@ -85,7 +85,7 @@ export const messagesHandler = (
         result = { connected: !!allowed };
       } else if (method === 'wallet.getAddress') {
         console.log('wallet.getAddress', 'CAL_REQUEST');
-        result = mainController.provider.getAddress() || 'xxx';
+        result = mainController.provider.getAddress();
       } else if (method === 'wallet.getNetwork') {
         result = mainController.provider.getNetwork();
       } else if (method === 'wallet.getBalance') {
