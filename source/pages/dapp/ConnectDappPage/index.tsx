@@ -19,7 +19,14 @@ enum ConnectStep {
 export default function ConnectDappPage() {
   const dapp = useCurrentDapp();
   const connectWalletToDapp = useConnectWalletToDApp();
-  const setActiveAccount = (account: EarthKeyringPair & { id: string }) => useUpdateActiveAccount(account);
+  const setActiveAccount = async (account: EarthKeyringPair & { id: string }) => {
+  
+    const useUpdateActiveAccounted = useUpdateActiveAccount(account);
+    useUpdateActiveAccounted().then(() => {
+      console.log("useUpdateActiveAccounted Done!! ");
+      console.log(account);
+    });
+  }
 
   const accounts = useSelector(selectAccounts);
 
@@ -34,6 +41,7 @@ export default function ConnectDappPage() {
     connectWalletToDapp().then(() => {
       console.log('connectWalletToDapp Done!!');
       if (accountIndex === undefined || (accountIndex < 0)) return;
+      console.log("accountIndex", accountIndex);
       setActiveAccount(accounts[accountIndex]);
     });
 
