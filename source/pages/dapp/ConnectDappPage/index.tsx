@@ -21,27 +21,24 @@ export default function ConnectDappPage() {
   const connectWalletToDapp = useConnectWalletToDApp();
   const setActiveAccount = async (account: EarthKeyringPair & { id: string }) => {
   
-    const useUpdateActiveAccounted = useUpdateActiveAccount(account);
-    useUpdateActiveAccounted().then(() => {
-      console.log("useUpdateActiveAccounted Done!! ");
-      console.log(account);
-    });
+    const useUpdateActiveAccountedFn = useUpdateActiveAccount(account);
+    await useUpdateActiveAccountedFn();
   }
 
   const accounts = useSelector(selectAccounts);
+
+  accounts.sort((a, b) => a.symbol.localeCompare(b.symbol));
 
   const [step, setStep] = useState(ConnectStep.Accounts);
   const [accountIndex, setAccountIndex] = useState<number>();
 
   const handleSubmit = () => {
-    if (step === ConnectStep.Accounts && accountIndex) {
+    if (step === ConnectStep.Accounts && accountIndex !== undefined) {
       setStep(ConnectStep.Confirm);
       return;
     }
     connectWalletToDapp().then(() => {
-      console.log('connectWalletToDapp Done!!');
-      if (accountIndex === undefined || (accountIndex < 0)) return;
-      console.log("accountIndex", accountIndex);
+      if (accountIndex === undefined) return;
       setActiveAccount(accounts[accountIndex]);
     });
 
@@ -77,7 +74,7 @@ export default function ConnectDappPage() {
               </div>
               <div className={styles.connectWith}>
                 <label>Connect With:</label>
-                {accounts.sort((a, b) => a.symbol.localeCompare(b.symbol)).map((account, index) => (
+                {accounts.map((account, index) => (
                   <div
                     className={styles.row}
                     key={account.id}
